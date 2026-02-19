@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>My Valentine - Myllena Carolina</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: white;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* efeito vinheta cinematográfica */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.7) 130%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* partículas de fundo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .heart-particle, .rain-particle, .star-particle {
+            position: absolute;
+            color: rgba(255, 182, 193, 0.5);
+            font-size: 20px;
+            user-select: none;
+            pointer-events: none;
+            opacity: 0;
+            animation: floatUp 8s linear infinite;
+            filter: drop-shadow(0 0 4px #ffb6c1);
+        }
+
+        .rain-particle {
+            color: rgba(200, 220, 255, 0.5);
+            font-size: 18px;
+            animation: rainFall 3s linear infinite;
+            opacity: 0.4;
+        }
+
+        .star-particle {
+            color: gold;
+            animation: twinkle 4s ease-in-out infinite;
+            font-size: 16px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(20deg); opacity: 0; }
+        }
+
+        @keyframes rainFall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0.4; }
+            100% { transform: translateY(110vh) translateX(20px); opacity: 0.2; }
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+
+        /* container principal */
+        .story-container {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(20, 20, 30, 0.3);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 30px;
+            padding: 28px 20px 32px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255, 182, 193, 0.15);
+            border: 1px solid rgba(255, 180, 200, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        /* cabeçalho */
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 5px;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            color: #ffb6c1;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            box-shadow: 0 0 12px rgba(255, 180, 200, 0.2);
+            z-index: 25;
+        }
+
+        .music-btn:hover {
+            background: #ff4e8b30;
+            border-color: #ff4e8b;
+            transform: scale(1.05);
+        }
+
+        .music-btn.playing {
+            color: #ff4e8b;
+            text-shadow: 0 0 15px #ffb6c1;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .chapter-badge {
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffb6c1;
+            background: rgba(10, 10, 15, 0.6);
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            backdrop-filter: blur(4px);
+            font-weight: 400;
+        }
+
+        .chapter-badge span {
+            color: white;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        /* área do texto */
+        .text-screen {
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 16px 0 20px;
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .slide-text {
+            font-size: 20px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-family: 'Georgia', serif;
+            transition: opacity 0.5s ease;
+            opacity: 1;
+        }
+
+        .slide-text p {
+            margin-bottom: 20px;
+        }
+
+        .slide-text .highlight {
+            color: #ffb6c1;
+            font-weight: 600;
+            text-shadow: 0 0 12px #ff4e8b;
+            display: inline-block;
+            animation: gentleGlow 2s infinite;
+        }
+
+        @keyframes gentleGlow {
+            0% { text-shadow: 0 0 12px #ff4e8b; }
+            50% { text-shadow: 0 0 25px #ff4e8b, 0 0 35px #ffb6c1; }
+            100% { text-shadow: 0 0 12px #ff4e8b; }
+        }
+
+        /* contador de tempo COMPLETO */
+        .time-counter {
+            font-size: 14px;
+            color: #ffb6c1;
+            text-align: center;
+            margin: 15px 0 10px;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            border-top: 1px dashed rgba(255,182,193,0.3);
+            border-bottom: 1px dashed rgba(255,182,193,0.3);
+            padding: 12px 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 30px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .time-counter span {
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 8px #ffb6c1;
+        }
+
+        /* navegação inferior */
+        .nav-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .timeline {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            max-width: 180px;
+        }
+
+        .dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,182,193,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(2px);
+            position: relative;
+        }
+
+        .dot.active {
+            background: #ff4e8b;
+            border-color: white;
+            box-shadow: 0 0 20px #ff4e8b;
+            transform: scale(1.1);
+        }
+
+        .dot.secret-dot {
+            background: rgba(160, 120, 255, 0.3);
+            border-color: #b7a0ff;
+            color: #e0d0ff;
+        }
+
+        .dot.secret-dot.active {
+            background: #9b7aff;
+            box-shadow: 0 0 20px #b7a0ff;
+        }
+
+        .dot:hover::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 35px;
+            background: rgba(0,0,0,0.8);
+            color: #ffb6c1;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 10px;
+            white-space: nowrap;
+            border: 1px solid #ffb6c1;
+        }
+
+        .secret-btn {
+            background: rgba(140, 100, 255, 0.2);
+            border: 1.5px solid #b79eff;
+            color: #e2d3ff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(180, 130, 255, 0.4);
+            animation: secretPulse 2s infinite;
+            margin-left: 6px;
+        }
+
+        @keyframes secretPulse {
+            0% { box-shadow: 0 0 10px #b79eff; transform: scale(1); }
+            50% { box-shadow: 0 0 35px #e2b0ff; transform: scale(1.1); }
+            100% { box-shadow: 0 0 10px #b79eff; transform: scale(1); }
+        }
+
+        .arrow-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .arrow {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,182,193,0.4);
+            color: #ffb6c1;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            user-select: none;
+        }
+
+        .arrow:active { background: #ff4e8b40; transform: scale(0.95); }
+        .arrow.disabled { opacity: 0.2; pointer-events: none; }
+
+        /* tela inicial */
+        .start-screen {
+            text-align: center;
+            padding: 30px 0 10px;
+        }
+
+        .start-title {
+            font-size: 36px;
+            letter-spacing: 4px;
+            color: white;
+            text-shadow: 0 0 20px #ff4e8b, 0 0 40px #ffb6c1;
+            margin-bottom: 5px;
+            font-weight: 600;
+            animation: titleAppear 1.5s ease;
+        }
+
+        .start-sub {
+            font-size: 22px;
+            color: #ffb6c1;
+            margin-bottom: 30px;
+            font-style: italic;
+            border-bottom: 1px solid rgba(255,180,200,0.3);
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+
+        @keyframes titleAppear {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .start-date {
+            font-size: 18px;
+            color: white;
+            background: rgba(255,182,193,0.1);
+            padding: 12px 20px;
+            border-radius: 50px;
+            margin: 20px 0;
+            border: 1px solid #ffb6c1;
+            display: inline-block;
+        }
+
+        .start-btn {
+            background: transparent;
+            border: 2px solid #ffb6c1;
+            color: #ffb6c1;
+            font-size: 24px;
+            padding: 16px 48px;
+            border-radius: 60px;
+            font-family: 'Georgia', serif;
+            letter-spacing: 4px;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(255, 182, 193, 0.3);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px #ffb6c1; }
+            50% { box-shadow: 0 0 60px #ff4e8b; }
+            100% { box-shadow: 0 0 20px #ffb6c1; }
+        }
+
+        .start-btn:hover {
+            background: #ffb6c1;
+            color: #0a0a0f;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* flash de transição */
+        .flash-effect {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            transition: opacity 0.2s;
+        }
+
+        @media (max-width: 480px) {
+            .story-container { padding: 20px 16px; }
+            .slide-text { font-size: 18px; }
+            .dot { width: 26px; height: 26px; }
+            .arrow { width: 44px; height: 44px; font-size: 26px; }
+            .start-title { font-size: 28px; }
+            .start-sub { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+<div class="flash-effect" id="flash"></div>
+
+<!-- TELA INICIAL -->
+<div id="startScreen" class="story-container" style="max-width: 450px; text-align: center;">
+    <div class="start-screen">
+        <div class="start-title">MY VALENTINE</div>
+        <div class="start-sub">Myllena Carolina</div>
+        <div class="start-date">💕 Iniciado em 02/07/2024 💕</div>
+        <button class="start-btn" id="startBtn">COMEÇAR</button>
+        <div style="color: #ffb6c180; margin-top: 20px; font-size: 14px;">"Meu roteiro favorito tem seu nome"</div>
+    </div>
+</div>
+
+<!-- CONTAINER PRINCIPAL -->
+<div id="mainApp" class="story-container hidden">
+    <div class="chapter-header">
+        <div class="music-btn" id="musicBtn">♪</div>
+        <div class="chapter-badge" id="chapterDisplay">CAPÍTULO <span id="chapterNum">1</span></div>
+    </div>
+
+    <div class="text-screen" id="textScreen">
+        <div class="slide-text" id="slideContent"></div>
+    </div>
+
+    <!-- botão secreto -->
+    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+        <div id="secretTrigger" class="secret-btn hidden">🔮</div>
+    </div>
+
+    <!-- CONTADOR COMPLETO: anos, meses, dias, horas, minutos, segundos -->
+    <div class="time-counter" id="timeCounter"></div>
+
+    <!-- navegação -->
+    <div class="nav-bottom">
+        <div class="timeline" id="timelineDots"></div>
+        <div class="arrow-controls">
+            <div class="arrow" id="prevArrow">←</div>
+            <div class="arrow" id="nextArrow">→</div>
+        </div>
+    </div>
+</div>
+
+<audio id="bgMusic" loop preload="none">
+    <source src="" type="audio/mpeg">
+</audio>
+
+<script>
+    (function() {
+        // ---------- CAPÍTULOS (nome apenas no 1º e 8º) ----------
+        const chapters = [
+            { title: "PRIMEIRO DIA DE AULA", text: "O destino nos colocou na mesma sala. Eu não sabia ainda, mas naquele dia, <span class='highlight'>Myllena Carolina</span> entrou na minha vida para sempre. <span class='highlight'>O primeiro ato.</span>" },
+            { title: "PRIMEIRO ENCONTRO", text: "Cinema, chuva e um beijo. Você com seu guarda-chuva rosa. O mundo parou enquanto a água molhava a calçada. <span class='highlight'>O beijo que selou tudo.</span>" },
+            { title: "O SORRISO", text: "Seu sorriso tem luz própria. Mesmo no fundo da sala, ele brilhava mais que qualquer outra coisa. Eu me apaixonei primeiro por ele." },
+            { title: "SUA INTELIGÊNCIA", text: "Conversas madrugada adentro. Você explicando o universo, e eu apaixonado pela sua mente brilhante. <span class='highlight'>Meu fascínio diário.</span>" },
+            { title: "OS OLHARES", text: "Na aula, no intervalo, no meio da multidão. Nossos olhos se procuravam. Um jogo silencioso que só a gente entendia." },
+            { title: "SEU CORAÇÃO", text: "Tão puro, tão gigante. Você cuida de todo mundo, mas eu quero cuidar de você. Seu coração é minha morada." },
+            { title: "DEPOIS DA AULA", text: "O cotidiano virou poesia. Café, mãos dadas, planejar o futuro. A rotina ao seu lado é meu lugar favorito." },
+            { title: "MEU FINAL FELIZ", text: "Iniciado em 02/07/2024. <span class='highlight'>Myllena Carolina da Silva Rosa</span>, você é a resposta para todas as perguntas. Meu final feliz é acordar ao seu lado. <span class='highlight'>Te amo.</span>" },
+            { title: "PÓS-CRÉDITOS", text: "Capítulo secreto. Porque nossa história não termina aqui. Ainda temos muitas cenas pela frente. <span class='highlight'>Eternidade?</span>" }
+        ];
+
+        const chapterTitles = [
+            "1º Dia de Aula",
+            "1º Encontro",
+            "O Sorriso",
+            "Inteligência",
+            "Os Olhares",
+            "Coração",
+            "Depois da Aula",
+            "Final Feliz",
+            "✨ Secreto"
+        ];
+
+        let currentChapter = 0;
+        let secretUnlocked = false;
+        let rainActive = false;
+        let musicPlaying = false;
+        const audio = document.getElementById('bgMusic');
+
+        // Elementos
+        const startScreen = document.getElementById('startScreen');
+        const mainApp = document.getElementById('mainApp');
+        const startBtn = document.getElementById('startBtn');
+        const chapterNumSpan = document.getElementById('chapterNum');
+        const slideContent = document.getElementById('slideContent');
+        const timelineDots = document.getElementById('timelineDots');
+        const secretTrigger = document.getElementById('secretTrigger');
+        const prevArrow = document.getElementById('prevArrow');
+        const nextArrow = document.getElementById('nextArrow');
+        const musicBtn = document.getElementById('musicBtn');
+        const flash = document.getElementById('flash');
+        const particlesDiv = document.getElementById('particles');
+        const timeCounter = document.getElementById('timeCounter');
+
+        // ---------- CONTADOR COMPLETO (anos, meses, dias, horas, minutos, segundos) ----------
+        function updateTimeCounter() {
+            const startDate = new Date(2024, 6, 2, 0, 0, 0); // 02/07/2024 00:00:00
+            const now = new Date();
+            
+            // Diferença em milissegundos
+            let diffMs = now - startDate;
+            
+            // Cálculos
+            const segundos = Math.floor(diffMs / 1000);
+            const minutos = Math.floor(segundos / 60);
+            const horas = Math.floor(minutos / 60);
+            const dias = Math.floor(horas / 24);
+            
+            // Anos e meses aproximados
+            const anos = Math.floor(dias / 365);
+            const meses = Math.floor((dias % 365) / 30);
+            const diasRestantes = dias % 30;
+            
+            const horasRestantes = horas % 24;
+            const minutosRestantes = minutos % 60;
+            const segundosRestantes = segundos % 60;
+            
+            timeCounter.innerHTML = `
+                <span>${anos}</span>a <span>${meses}</span>m <span>${diasRestantes}</span>d · 
+                <span>${horasRestantes.toString().padStart(2, '0')}</span>h 
+                <span>${minutosRestantes.toString().padStart(2, '0')}</span>min 
+                <span>${segundosRestantes.toString().padStart(2, '0')}</span>s
+            `;
+        }
+
+        // Atualizar a cada segundo
+        setInterval(updateTimeCounter, 1000);
+
+        // Estrelas
+        function spawnStars(count = 20) {
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-particle';
+                star.innerHTML = '✨';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.fontSize = (10 + Math.random() * 20) + 'px';
+                particlesDiv.appendChild(star);
+                setTimeout(() => star.remove(), 4000);
+            }
+        }
+
+        // Atualizar conteúdo
+        function updateContent() {
+            chapterNumSpan.innerText = currentChapter + 1;
+            slideContent.innerHTML = chapters[currentChapter].text;
+
+            document.querySelectorAll('.dot').forEach((dot, idx) => {
+                if (idx === currentChapter) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+
+            // Chuva no capítulo 2
+            if (currentChapter === 1 && !rainActive) {
+                enableRain(true);
+                rainActive = true;
+            } else if (currentChapter !== 1 && rainActive) {
+                enableRain(false);
+                rainActive = false;
+            }
+
+            // Botão secreto no capítulo 8
+            if (currentChapter === 7 && !secretUnlocked) {
+                secretTrigger.classList.remove('hidden');
+            } else {
+                if (!secretUnlocked) secretTrigger.classList.add('hidden');
+            }
+
+            if (currentChapter === 8) {
+                secretTrigger.classList.add('hidden');
+                spawnStars(30);
+            }
+
+            if (currentChapter === 0) prevArrow.classList.add('disabled');
+            else prevArrow.classList.remove('disabled');
+
+            if (currentChapter === 8) nextArrow.classList.add('disabled');
+            else nextArrow.classList.remove('disabled');
+        }
+
+        // Timeline
+        function renderTimeline() {
+            let total = secretUnlocked ? 9 : 8;
+            let html = '';
+            for (let i = 0; i < total; i++) {
+                let secretClass = (i === 8) ? 'secret-dot' : '';
+                html += `<div class="dot ${secretClass}" data-index="${i}" data-title="${chapterTitles[i]}">${i+1}</div>`;
+            }
+            timelineDots.innerHTML = html;
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    let idx = parseInt(e.currentTarget.dataset.index);
+                    if (!secretUnlocked && idx === 8) return;
+                    goToChapter(idx);
+                });
+            });
+            updateContent();
+        }
+
+        function goToChapter(idx) {
+            if (idx < 0 || idx > (secretUnlocked ? 8 : 7)) return;
+            if (!secretUnlocked && idx === 8) return;
+            
+            flash.style.opacity = '0.3';
+            setTimeout(() => { flash.style.opacity = '0'; }, 150);
+            
+            currentChapter = idx;
+            updateContent();
+        }
+
+        function nextChapter() {
+            let max = secretUnlocked ? 8 : 7;
+            if (currentChapter < max) goToChapter(currentChapter + 1);
+        }
+
+        function prevChapter() {
+            if (currentChapter > 0) goToChapter(currentChapter - 1);
+        }
+
+        // Eventos de teclado e touch
+        window.addEventListener('keydown', (e) => {
+            if (mainApp.classList.contains('hidden')) return;
+            if (e.key === 'ArrowRight') { e.preventDefault(); nextChapter(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevChapter(); }
+            else if (e.key === ' ') { e.preventDefault(); nextChapter(); }
+        });
+
+        let touchStartX = 0;
+        window.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', (e) => {
+            if (mainApp.classList.contains('hidden')) return;
+            let diff = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) prevChapter();
+                else nextChapter();
+            }
+        });
+
+        // Chuva
+        function enableRain(active) {
+            const existingRain = document.querySelectorAll('.rain-particle');
+            if (active) {
+                if (existingRain.length > 0) return;
+                for (let i = 0; i < 100; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'rain-particle';
+                    drop.innerHTML = '💧';
+                    drop.style.left = Math.random() * 100 + '%';
+                    drop.style.animationDelay = Math.random() * 5 + 's';
+                    drop.style.fontSize = (12 + Math.random() * 20) + 'px';
+                    drop.style.opacity = 0.2 + Math.random() * 0.3;
+                    particlesDiv.appendChild(drop);
+                }
+            } else {
+                document.querySelectorAll('.rain-particle').forEach(el => el.remove());
+            }
+        }
+
+        // Corações
+        function spawnHearts() {
+            document.querySelectorAll('.heart-particle').forEach(el => el.remove());
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (4 + Math.random() * 8) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (15 + Math.random() * 20) + 'px';
+                heart.style.opacity = 0.2 + Math.random() * 0.3;
+                particlesDiv.appendChild(heart);
+            }
+        }
+
+        // Botão secreto
+        secretTrigger.addEventListener('click', () => {
+            if (!secretUnlocked && currentChapter === 7) {
+                secretUnlocked = true;
+                renderTimeline();
+                secretTrigger.classList.add('hidden');
+                flash.style.opacity = '0.6';
+                setTimeout(() => flash.style.opacity = '0', 400);
+                spawnStars(50);
+            }
+        });
+
+        // Música
+        musicBtn.addEventListener('click', () => {
+            musicPlaying = !musicPlaying;
+            if (musicPlaying) {
+                musicBtn.classList.add('playing');
+                audio.play().catch(() => {});
+            } else {
+                musicBtn.classList.remove('playing');
+                audio.pause();
+            }
+        });
+
+        // Setas
+        nextArrow.addEventListener('click', nextChapter);
+        prevArrow.addEventListener('click', prevChapter);
+
+        // Começar
+        startBtn.addEventListener('click', () => {
+            startScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            currentChapter = 0;
+            secretUnlocked = false;
+            rainActive = false;
+            enableRain(false);
+            renderTimeline();
+            spawnHearts();
+            updateContent();
+            updateTimeCounter();
+        });
+
+        // Inicialização
+        spawnHearts();
+        updateTimeCounter();
+
+        // Manter corações
+        setInterval(() => {
+            if (document.querySelectorAll('.heart-particle').length < 25) {
+                for (let i = 0; i < 5; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-particle';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (4 + Math.random() * 8) + 's';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heart.style.fontSize = (15 + Math.random() * 20) + 'px';
+                    heart.style.opacity = 0.2 + Math.random() * 0.3;
+                    particlesDiv.appendChild(heart);
+                }
+            }
+        }, 3000);
+    })();
+</script>
+</body>
+</html>
+
+<!-- botão voltar ao menu (aparece apenas cap 8 e 9) -->
+<div style="display: flex; justify-content: center; margin: 15px 0;">
+    <button id="menuBtn" class="menu-btn hidden">🎬 MENU INICIAL</button>
+</div>
